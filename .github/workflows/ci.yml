@@ -21,9 +21,11 @@ jobs:
 
       # Setup Rust
       - name: Set up Rust
-        uses: actions/setup-rust@v1
+        uses: actions-rs/toolchain@v1
         with:
-          rust-version: stable
+            toolchain: stable
+            override: true
+            components: clippy
 
       - name: Rust build
         run: cargo build --release
