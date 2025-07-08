@@ -4,7 +4,6 @@ build-backend = "maturin"
 
 [project]
 name = "hxforge"
-version = "0.0.0"
 dynamic = ["version"]
 description = "Preliminary design, analysis, and optimisation toolkit for heat exchangers"
 authors = [
@@ -12,7 +11,7 @@ authors = [
 ]
 license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 
 dependencies = [
 ]

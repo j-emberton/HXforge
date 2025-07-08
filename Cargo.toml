@@ -1,0 +1,16 @@
+[package]
+name = "hxforge"
+version = "0.0.0"  # Placeholder; overridden by maturin from pyproject.toml
+edition = "2024"
+publish = false  # optional, prevents accidental crates.io publication
+
+[lib]
+name = "hxforge"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.25", features = ["extension-module"] }
+
+[package.metadata.maturin]
+# Pull version from pyproject.toml (setuptools_scm handles this)
+name = "hxforge"
