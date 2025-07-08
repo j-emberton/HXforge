@@ -1,0 +1,30 @@
+[build-system]
+requires = ["maturin>=1.4"]
+build-backend = "maturin"
+
+[project]
+name = "hxforge"
+dynamic = ["version"]
+description = "Preliminary design, analysis, and optimisation toolkit for heat exchangers"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "pytest",
+    "mypy"
+]
+
+[tool.maturin]
+bindings = "pyo3"  # Use "bin" if building a binary CLI, or "cffi"/"uniffi" if using other FFI methods
+features = ["pyo3/extension-module"]
+
+
