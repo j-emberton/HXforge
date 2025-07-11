@@ -14,13 +14,17 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
+    "dash",
+    "dash-bootstrap-components",
+    "dash-core-components",
 ]
 
 [project.optional-dependencies]
 dev = [
     "ruff",
     "pytest",
-    "mypy"
+    "mypy",
+    "dash[testing]",
 ]
 
 [tool.maturin]
