@@ -14,7 +14,6 @@ Tests can simply import `create_app()` or the module‑level `app`.
 
 from __future__ import annotations
 
-import dash
 from dash import Dash, html, Input, Output, State
 import dash_bootstrap_components as dbc
 
