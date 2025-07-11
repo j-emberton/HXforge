@@ -5,7 +5,9 @@ edition = "2021"
 publish = false  # optional, prevents accidental crates.io publication
 
 [lib]
+
 name = "hxforge_solver"
+
 crate-type = ["cdylib"]
 
 [dependencies]

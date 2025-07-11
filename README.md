@@ -20,6 +20,7 @@ Clone this repo onto your system.
 
 From the project root, create and activate a uv virtual environment. Then use 'uv sync' to install all dependencies.
 
+
 Build the code and install locally with 'uv pip install -e .' (creates an editable install).
 
 The gui can be activated by running 'python3 -m hxforge.main' in the terminal. Navigate to 'http://127.0.0.1:8050' in the browser to access the gui.
