@@ -17,7 +17,6 @@ dependencies = [
     "dash",
     "dash-bootstrap-components",
     "dash-core-components",
-
 ]
 
 [project.optional-dependencies]

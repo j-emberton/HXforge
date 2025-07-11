@@ -8,7 +8,6 @@ Built with **Rust** for performance and **Python Dash** for interactivity, HXFor
 
 This project is in early development. Functionality is limited, and interfaces may change rapidly. Contributions, feedback, and ideas are welcome as the framework evolves.
 
-
 Latest release **v0.1.0**. See [Changelog.md](./Changelog.md) for detail.
 
 Release Roadmap at [Roadmap](./Roadmap.md)
@@ -20,6 +19,9 @@ This project use uv as the project manager. Please make sure uv is installed on 
 Clone this repo onto your system.
 
 From the project root, create and activate a uv virtual environment. Then use 'uv sync' to install all dependencies.
+
+
+Build the code and install locally with 'uv pip install -e .' (creates an editable install).
 
 The gui can be activated by running 'python3 -m hxforge.main' in the terminal. Navigate to 'http://127.0.0.1:8050' in the browser to access the gui.
 
