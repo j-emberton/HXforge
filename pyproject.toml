@@ -14,9 +14,12 @@ readme = "README.md"
 requires-python = ">=3.11"
 
 dependencies = [
+    "coolprop>=6.8.0",
     "dash",
     "dash-bootstrap-components",
     "dash-core-components",
+    "numpy>=2.3.1",
+    "pandas>=2.3.1",
 ]
 
 [project.optional-dependencies]

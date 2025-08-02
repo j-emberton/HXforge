@@ -16,15 +16,20 @@ from __future__ import annotations
 
 from dash import Dash, html, Input, Output, State
 import dash_bootstrap_components as dbc
+import hxforge.gui.layout as layout
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Native extension (Rust via PyO3) — adjust import to your wheel name.
 # ──────────────────────────────────────────────────────────────────────────────
 from hxforge_solver import heat_load_lmtd as lmtd  # type: ignore
+from hxforge.physics.htc import overall_htc, wall_resistance  # type: ignore
 
 # Default input values
-DEFAULT_U = 500.0  # W/m²·K
-DEFAULT_AREA = 10.0  # m²
+DEFAULT_HTC_EXT = 500.0  # W/m²·K
+DEFAULT_HTC_INT = 1000.0  # W/m²·K
+DEFAULT_TUBE_LEN = 1  # m
+DEFAULT_TUBE_DIAM_EXT = 0.002  # m
+DEFAULT_TUBE_THK = 0.0005  # m
 DEFAULT_DT1 = 30.0  # K
 DEFAULT_DT2 = 20.0  # K
 
@@ -43,75 +48,9 @@ def create_app() -> Dash:
         title="Heat‑Load (LMTD) Calculator",
     )
 
-    app.layout = _build_layout()
+    app.layout = layout.build_layout_manager()
     _register_callbacks(app)
     return app
-
-
-# ╭──────────────────────────────────────────────────────────────────────────╮
-# │ Layout Builders                                                         │
-# ╰──────────────────────────────────────────────────────────────────────────╯
-
-
-def _build_layout() -> dbc.Container:
-    """Construct page layout (pure function)."""
-
-    def _num(id_: str, label: str, value: float, step: float) -> html.Div:
-        """Create a labelled numeric input (no deprecated FormGroup)."""
-        return html.Div(
-            [
-                dbc.Label(label, html_for=id_, className="form-label mb-1"),
-                dbc.Input(
-                    id=id_,
-                    type="number",
-                    value=value,
-                    step=step,
-                    debounce=True,
-                    className="form-control",
-                ),
-            ],
-            className="mb-2",
-        )
-
-    inputs = dbc.Card(
-        [
-            dbc.CardHeader(html.H5("Inputs")),
-            dbc.CardBody(
-                [
-                    _num("input-u", "Overall U (W/m²·K)", DEFAULT_U, 0.1),
-                    _num("input-area", "Area A (m²)", DEFAULT_AREA, 0.01),
-                    _num("input-dt1", "ΔT₁ (K)", DEFAULT_DT1, 0.1),
-                    _num("input-dt2", "ΔT₂ (K)", DEFAULT_DT2, 0.1),
-                    dbc.Button(
-                        "Calculate", id="btn-calc", color="primary", className="mt-3"
-                    ),
-                ]
-            ),
-        ],
-        className="shadow-sm",
-    )
-
-    output = dbc.Card(
-        [
-            dbc.CardHeader(html.H5("Heat Duty Q")),
-            dbc.CardBody(html.H2(id="output-q", className="text-primary my-0")),
-        ],
-        className="shadow-sm",
-    )
-
-    return dbc.Container(
-        [
-            html.H2("Heat‑Load (LMTD) Calculator", className="my-4"),
-            dbc.Row(
-                [
-                    dbc.Col(inputs, width=4),
-                    dbc.Col(output, width=8),
-                ]
-            ),
-        ],
-        fluid=True,
-        className="px-4",
-    )
 
 
 # ╭──────────────────────────────────────────────────────────────────────────╮
@@ -125,26 +64,46 @@ def _register_callbacks(app: Dash) -> None:
     @app.callback(
         Output("output-q", "children"),
         Input("btn-calc", "n_clicks"),
-        State("input-u", "value"),
-        State("input-area", "value"),
+        State("input-htc-ext", "value"),
+        State("input-htc-int", "value"),
+        State("input-tube-len", "value"),
+        State("input-tube-diam-ext", "value"),
+        State("input-tube-thk", "value"),
         State("input-dt1", "value"),
         State("input-dt2", "value"),
         prevent_initial_call=True,
     )
-    def _calculate_heat(
+    def _prep_and_run_case(
         _clicks: int | None,
-        u: float | None,
-        area: float | None,
+        htc_ext: float | None,
+        htc_int: float | None,
+        tube_len: float | None,
+        tube_diam_ext: float | None,
+        tube_thk: float | None,
         dt1: float | None,
         dt2: float | None,
     ) -> str:
-        if None in (u, area, dt1, dt2):
+        if None in (htc_ext, htc_int, tube_len, tube_diam_ext, tube_thk, dt1, dt2):
             return "Please fill in all inputs."
-        try:
-            watts = lmtd(float(u), float(area), float(dt1), float(dt2))
-            return f"{watts:,.2f} W"
-        except Exception as exc:  # pragma: no cover — display to user
-            return f"Error: {exc}"
+        else:
+            try:
+                u = overall_htc(
+                    float(htc_ext),
+                    float(htc_int),
+                    wall_resistance(float(tube_thk), 0.5),  # Assume k = 0.5 W/(m·K)
+                )
+                watts = lmtd(float(u), float(area), float(dt1), float(dt2))
+                return f"{watts:,.2f} W"
+            except Exception as exc:  # pragma: no cover — display to user
+                return f"Error: {exc}"
+            
+        def _validate_inputs(
+            htc_ext, htc_int, tube_len, tube_diam_ext, tube_thk, dt1, dt2
+        ) 
+
+
+            
+        
 
 
 # Expose a module‑level `app` so `python heat_load_dash.py` just works.
